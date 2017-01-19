@@ -283,6 +283,7 @@ function setupMessaging() {
   const NEW_APPS_TOPIC = 'new-apps';
   const firebaseMsgSenderId = window.__config.firebase_msg_sender_id;
   const checkbox = document.getElementById('notifications');
+  console.log('Checkbox: ', checkbox);
   const messaging = new Messaging(firebaseMsgSenderId);
   // eslint-disable-next-line no-unused-vars
   const notificationCheckbox = new NotificationCheckbox(messaging, checkbox, NEW_APPS_TOPIC);

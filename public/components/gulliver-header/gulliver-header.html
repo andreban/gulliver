@@ -1,0 +1,84 @@
+<template id="gulliver-header">
+  <style>
+    /* Navbar */
+    .navbar {
+      position: relative;
+      height: 82px;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      background: #1976D2;
+    }
+    .navbar-title {
+      height: 55px;
+      color: white;
+      font-size: 30px;
+      text-align: center;
+      line-height: 55px;
+    }
+    .navbar-title #title {
+      -ms-flex-item-align: start;
+          align-self: flex-start;
+      margin: 0 auto;
+      text-align: left;
+      padding-left: 55px;
+      background-position: left center;
+      background-repeat: no-repeat;
+      background-image: url(/favicons/android-chrome-48x48.png);
+      background-image: -webkit-image-set( url(/favicons/android-chrome-48x48.png) 1x, url(/favicons/android-chrome-96x96.png) 2x );
+    }
+    .navbar-subtitle {
+      height: 20px;
+      color: white;
+      font-size: 18px;
+      text-align: center;
+      line-height: 20px;
+    }
+    .navbar a {
+      color: white;
+      text-decoration: none;
+    }
+
+    /* Flex NavBar */
+    @media (max-width: 903px) {
+      .navbar {
+        height: 55px;
+        padding-left: 16px;
+      }
+      .navbar-title {
+        font-size: 24px;
+        text-align: left; 
+      }
+      .navbar-title #title {
+        padding-left: 40px;
+        background-image: url(/favicons/android-chrome-36x36.png);
+        background-image: -webkit-image-set( url(/favicons/android-chrome-36x36.png) 1x, url(/favicons/android-chrome-72x72.png) 2x );
+      }
+      .navbar-subtitle {
+        height: 0px;
+      }
+      .navbar notifications-switch {
+        bottom: 16px;
+        right: 16px;
+      }
+      .hide-on-mobile {
+        display: none;
+      }
+    }  
+  </style>
+
+  <div class="navbar">
+    <div class="navbar-title"><a id="title" href="/">PWA Directory</a></div>
+    <div class="navbar-subtitle hide-on-mobile">
+      <a id="subtitle" href="/">A Directory of Progressive Web Apps</a>
+    </div>
+
+    <slot name="right-button"></slot>
+  </div>
+</template>
+<script type="text/javascript" src="./gulliver-header.js" defer></script>
+

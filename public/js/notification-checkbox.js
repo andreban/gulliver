@@ -36,18 +36,18 @@ export default class NotificationCheckbox {
 
         this.messaging.isSubscribed(topic)
           .then(subscribed => {
-            checkbox.checked = subscribed;
+            checkbox.active = subscribed;
           });
       });
   }
 
   _setupEventListener() {
     this.checkbox.addEventListener('change', e => {
-      if (e.target.checked) {
+      if (e.target.active) {
         this.messaging.subscribe(this.topic)
           .catch(e => {
             console.error('Error subscribing to topic: ', e);
-            this.checkbox.checked = false;
+            this.checkbox.active = false;
             if (e.blocked) {
               this.checkbox.disabled = true;
             }
@@ -59,10 +59,10 @@ export default class NotificationCheckbox {
           console.error('Error unsubscribing from topic: ', err);
           if (err.blocked) {
             this.checkbox.disabled = true;
-            this.checkbox.checked = false;
+            this.checkbox.active = false;
             return;
           }
-          this.checkbox.checked = true;
+          this.checkbox.active = true;
           return;
         });
     });

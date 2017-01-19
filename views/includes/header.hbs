@@ -12,7 +12,12 @@
  limitations under the License. --}}
 
 <!-- Start of header include. -->
-<div class="navbar">
+<gulliver-header>
+  <notifications-switch id="notifications" slot="right-button"></notifications-switch>  
+</gulliver-header>
+<link rel="import" href="/components/gulliver-header/gulliver-header.html" async />
+<link rel="import" href="/components/notifications-switch/notifications-switch.html" async />
+{{!--<div class="navbar">
   <div class="navbar-title"><a id="title" href="/">PWA Directory</a></div>
   <div class="navbar-subtitle hide-on-mobile">
     <a id="subtitle" href="/">A Directory of Progressive Web Apps</a>
@@ -28,6 +33,6 @@
   <button
     id="auth-button"
     class="button blue gulliver-online-aware gulliver-signedin-aware">Login</button>
-</div>
+</div>--}}
 
 <!-- End of header include. -->
