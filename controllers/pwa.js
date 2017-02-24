@@ -34,11 +34,17 @@ const DEFAULT_SORT_ORDER = 'newest';
  *
  * Display a page of PWAs (up to ten at a time).
  */
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
+  req.url = '/base/';
+  router.handle(req, res);
+});
+
+router.get('/:template([a-z]{1,})/', (req, res, next) => {
   const pageNumber = parseInt(req.query.page, 10) || DEFAULT_PAGE_NUMBER;
   const sortOrder = req.query.sort || DEFAULT_SORT_ORDER;
   const start = (pageNumber - 1) * LIST_PAGE_SIZE;
   const end = pageNumber * LIST_PAGE_SIZE;
+  const template = req.params.template;
   let pwaCount = 0;
   pwaLib.count()
     .then(count => {
@@ -60,9 +66,10 @@ router.get('/', (req, res, next) => {
         showScore: sortOrder === 'score',
         pwaCount: pwaCount,
         startPwa: start + 1,
-        endPwa: Math.min(pwaCount, end)
+        endPwa: Math.min(pwaCount, end),
+        template: template
       });
-      res.render('pwas/list.hbs', arg);
+      res.render('pwas/list.dust', arg);
     }).catch(err => {
       next(err);
     });
@@ -165,7 +172,14 @@ router.post('/add', (req, res, next) => {
  *
  * Display a PWA.
  */
-router.get('/:pwa', (req, res, next) => {
+router.get('/:pwa', (req, res) => {
+  req.url = '/' + req.params.pwa + '/base/';
+  console.log(req.url);
+  router.handle(req, res);
+});
+
+router.get('/:pwa/:template', (req, res, next) => {
+  const template = req.params.template;
   pwaLib.find(req.params.pwa)
     .then(pwa => {
       lighthouseLib.findByPwaId(req.params.pwa)
@@ -176,9 +190,10 @@ router.get('/:pwa', (req, res, next) => {
           rawManifestJson: JSON.parse(pwa.manifest.raw),
           title: 'PWA Directory: ' + pwa.name,
           description: 'PWA Directory: ' + pwa.name + ' - ' + pwa.description,
-          backlink: '/'
+          backlink: '/',
+          template: template
         });
-        res.render('pwas/view.hbs', arg);
+        res.render('pwas/view.dust', arg);
       });
     })
     .catch(err => {

@@ -1,0 +1,8 @@
+{>"templates/{template}"/}
+{<rootContent}
+  <ul>
+    {#pwas}  
+      <a href="/pwas/{id}"><li>{name}</li></a>
+    {/pwas}
+  </ul>
+{/rootContent}

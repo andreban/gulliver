@@ -39,6 +39,11 @@ router.get('/', (req, res) => {
   router.handle(req, res);
 });
 
+router.get('/shell', (req, res) => {
+  req.url = '/pwas/shell';
+  router.handle(req, res);
+});
+
 // /.shell hosts app shell dependencies
 router.use('/.shell', require('./shell'));
 

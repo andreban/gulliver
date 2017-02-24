@@ -20,13 +20,13 @@ router.use((req, res, next) => {
   res.setHeader('Content-Type', 'text/html');
 
   /* eslint-disable quotes */
-  res.setHeader('content-security-policy', [
-    `default-src 'self' https://accounts.google.com https://apis.google.com https://fcm.googleapis.com`,
-    `script-src 'self' 'unsafe-eval' https://apis.google.com https://www.google-analytics.com https://www.gstatic.com`,
-    `style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/ https://www.gstatic.com`,
-    `font-src 'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/`,
-    `img-src 'self' https://storage.googleapis.com https://www.google-analytics.com`
-  ].join('; '));
+  // res.setHeader('content-security-policy', [
+  //   `default-src 'self' https://accounts.google.com https://apis.google.com https://fcm.googleapis.com`,
+  //   `script-src 'self' 'unsafe-eval' https://apis.google.com https://www.google-analytics.com https://www.gstatic.com`,
+  //   `style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/ https://www.gstatic.com`,
+  //   `font-src 'self' https://cdnjs.cloudflare.com/ajax/libs/font-awesome/`,
+  //   `img-src 'self' https://storage.googleapis.com https://www.google-analytics.com`
+  // ].join('; '));
   /* eslint-enable quotes */
   res.setHeader('x-content-type-options', 'nosniff');
   res.setHeader('x-dns-prefetch-control', 'off');

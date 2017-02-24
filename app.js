@@ -23,8 +23,9 @@ const path = require('path');
 const express = require('express');
 const config = require('./config/config');
 const asset = require('./lib/asset-hashing').asset;
-const hbs = require('hbs');
-const helpers = require('./views/helpers');
+const adaro = require('adaro');
+// const hbs = require('hbs');
+// const helpers = require('./views/helpers');
 const app = express();
 const bodyParser = require('body-parser');
 const serveStatic = require('serve-static');
@@ -36,14 +37,26 @@ const ENVIRONMENT_PRODUCTION = 'production';
 
 app.disable('x-powered-by');
 app.disable('etag');
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views/dust'));
 app.set('trust proxy', true);
-hbs.registerPartials(path.join(__dirname, '/views/includes/'));
-helpers.registerHelpers(hbs);
+
+// ### Handlebars Configuration
+// app.set('view engine', 'hbs');
+// hbs.registerPartials(path.join(__dirname, '/views/includes/'));
+// helpers.registerHelpers(hbs);
 
 // Make variables available to *all* templates
-hbs.localsAsTemplateData(app);
+// hbs.localsAsTemplateData(app);
+// ## End of Handlebars configuration
+
+// ## Dust Configuration
+const dustOptions = {
+  helpers: ['dustjs-helpers']
+};
+app.engine('dust', adaro.dust(dustOptions));
+app.set('view engine', 'dust');
+// ## End of Dust Configuration
+
 app.locals.configstring = JSON.stringify({
   /* eslint-disable camelcase */
   client_id: config.get('CLIENT_ID'),

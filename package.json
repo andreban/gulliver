@@ -43,6 +43,7 @@
     ]
   },
   "dependencies": {
+    "adaro": "^1.0.4",
     "babel-preset-es2015-rollup": "^3.0.0",
     "body-parser": "^1.15.2",
     "cheerio": "^0.22.0",

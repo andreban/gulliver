@@ -1,0 +1,59 @@
+<html lang=en>
+  <head>
+    {>"partials/head"/}
+  </head>
+  <body>
+    {>"partials/header"/}    
+    <div id="root">
+      {+rootContent}
+      <h1>Template!!</h1>
+      {/rootContent}
+    </div>
+    {>"partials/footer"/}
+  </body>
+  <script type="text/javascript">
+    const rootContent = document.querySelector('#root');  
+
+    function getShellUrl(originalUrl) {
+      const url = new URL(originalUrl);
+      if (url.pathname.endsWith('/')) {
+        url.pathname = url.pathname + 'shell/';
+      } else {
+        url.pathname = url.pathname + '/shell/';        
+      }
+      return url.toString();
+    }
+
+    function changePage(url) {
+      const shellUrl = getShellUrl(url);
+      return fetch(shellUrl)
+        .then(response => response.text())
+        .then(text => {
+          rootContent.innerHTML = text;
+          catchClickListener(rootContent);                        
+          return true;
+        });
+    } 
+
+    function catchClickListener(baseElement) {
+      baseElement.querySelectorAll('a').forEach(anchor => {
+        if (anchor.href.startsWith(document.origin)) {
+          anchor.addEventListener('click', e => {
+            changePage(anchor.href)
+              .then(() => {
+                window.history.pushState({}, '', anchor.href);          
+              });
+            e.preventDefault();
+            return false;
+          }, false);
+        }
+      })
+    };
+
+    window.addEventListener('popstate', () => {
+      changePage(window.location);
+    });
+
+    catchClickListener(document);
+  </script>
+</html>

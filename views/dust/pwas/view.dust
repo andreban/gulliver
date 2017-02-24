@@ -1,0 +1,5 @@
+{>"templates/{template}"/}
+{<rootContent}
+  <h1>{name}</h1>
+  {description}
+{/rootContent}
