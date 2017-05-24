@@ -78,12 +78,33 @@ const gulliverHandler = (request, values, options) => {
     });
 };
 
+const runningFetches = new Map();
+const concurrentRequestHandler = (request, values, options) => {
+  let pendingPromise = runningFetches.get(request.url);
+  if (!pendingPromise) {
+    pendingPromise = toolbox.fastest(request, values, options)
+      .then(response => {
+        runningFetches.delete(request.url);
+        return response;
+      });
+    runningFetches.set(request.url, pendingPromise);
+  }
+  return pendingPromise.then(response => response.clone());
+};
+
+const getContentOnlyUrl = url => {
+  const u = new URL(url);
+  u.searchParams.append('contentOnly', 'true');
+  return u.toString();
+};
+
 toolbox.router.default = (request, values, options) => {
   if (request.mode === 'navigate') {
-    return getFromCache(SHELL_URL)
-      .then(response => response || gulliverHandler(request, values, options));
+    // Starts request for the content early, and serves the shell.
+    concurrentRequestHandler(new Request(getContentOnlyUrl(request.url), values, options));
+    return getFromCache(SHELL_URL);
   }
-  return gulliverHandler(request, values, options);
+  return concurrentRequestHandler(request, values, options);
 };
 
 toolbox.router.get(/\/pwas\/\d+/, toolbox.router.default, PWA_OPTION);
