@@ -154,6 +154,7 @@ main {
 .section-title .back {
   align-self: flex-start;
   margin-right: auto;
+  height: 48px;
 }
 .section-title .back svg {
   fill: white;

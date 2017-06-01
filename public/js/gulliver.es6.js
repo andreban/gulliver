@@ -40,6 +40,7 @@ import Shell from './shell';
 import {LoaderTransitionStrategy} from './routing/transitions';
 import PwaForm from './pwa-form';
 import Chart from './chart';
+import SearchButton from './search-button';
 
 const CHART_BASE_URLS = {
   lighthouse: '/api/lighthouse/graph/PWAID',
@@ -57,7 +58,7 @@ class Gulliver {
     this.setupBacklink();
     this.setupServiceWorker();
     this.setupMessaging();
-    this.setupSearchElements();
+    SearchButton.setupSearchElements(this.router);
 
     // Setup SignIn
     this.signIn = new SignIn(window, this.config);
@@ -95,8 +96,6 @@ class Gulliver {
     });
 
     const setupCharts = () => {
-      // Clear search-input value
-      document.querySelector('#search-input').value = '';
       const generateChartConfig = chartElement => {
         const pwaId = chartElement.getAttribute('pwa');
         const type = chartElement.getAttribute('type');
@@ -107,27 +106,27 @@ class Gulliver {
       charts.forEach(chart => new Chart(generateChartConfig(chart)).load());
     };
 
-    // Route for `/pwas/[id]`.
-    this._addRoute(/\/pwas\/(\d+)/, transitionStrategy, setupCharts, {
-      showTabs: false,
-      backlink: true,
-      subtitle: true,
-      search: false
-    });
-
-    const nop = () => {
-      // Clear search-input value
+    // Clear search-input value
+    const clearSearchInput = () => {
       document.querySelector('#search-input').value = '';
     };
 
     // Link search-input value to search query paramter
     const setupSearchInput = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      document.querySelector('#search-input').value = urlParams.get('search');
+      document.querySelector('#search-input').value = urlParams.get('query');
     };
 
+    // Route for `/pwas/[id]`.
+    this._addRoute(/\/pwas\/(\d+)/, transitionStrategy, [setupCharts, clearSearchInput], {
+      showTabs: false,
+      backlink: true,
+      subtitle: true,
+      search: false
+    });
+
     // Route for `/?search=`.
-    this._addRoute(/\/\?.*search/, transitionStrategy, setupSearchInput, {
+    this._addRoute(/\/pwas\/search\?query/, transitionStrategy, setupSearchInput, {
       showTabs: false,
       backlink: true,
       subtitle: true,
@@ -135,7 +134,7 @@ class Gulliver {
     });
 
     // Route for `/?sort=score`.
-    this._addRoute(/\/\?.*sort=score/, transitionStrategy, nop, {
+    this._addRoute(/\/\?.*sort=score/, transitionStrategy, clearSearchInput, {
       showTabs: true,
       backlink: false,
       subtitle: true,
@@ -144,7 +143,7 @@ class Gulliver {
     });
 
     // Route for `/`.
-    this._addRoute(/.+/, transitionStrategy, nop, {
+    this._addRoute(/.+/, transitionStrategy, clearSearchInput, {
       showTabs: true,
       backlink: false,
       subtitle: true,
@@ -187,33 +186,6 @@ class Gulliver {
     document.querySelector('a#backlink').addEventListener('click', _ => {
       window.history.back();
     });
-  }
-
- /**
-  * Setup/configure search button
-  */
-  setupSearchElements() {
-    const eventHandler = event => {
-      event.preventDefault();
-      document.querySelector('#search-button').blur();
-      const searchValue = document.querySelector('#search-input').value;
-      if (searchValue.length === 0) {
-        if (document.querySelector('#backlink').classList.contains('hidden')) {
-          document.querySelector('#newest').classList.toggle('hidden');
-          document.querySelector('#score').classList.toggle('hidden');
-        }
-        document.querySelector('#search').classList.toggle('hidden');
-      } else {
-        const urlParams = new URLSearchParams(window.location.search);
-        // Only navigate if the search query changes
-        if (searchValue !== urlParams.get('search')) {
-          this.router.navigate('/?search=' + searchValue);
-        }
-      }
-      document.querySelector('#search-input').focus();
-    };
-    document.querySelector('#search').addEventListener('submit', eventHandler);
-    document.querySelector('#search-button').addEventListener('click', eventHandler);
   }
 }
 
