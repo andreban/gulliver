@@ -40,7 +40,6 @@ import Shell from './shell';
 import {LoaderTransitionStrategy} from './routing/transitions';
 import PwaForm from './pwa-form';
 import Chart from './chart';
-import SearchButton from './search-button';
 
 const CHART_BASE_URLS = {
   lighthouse: '/api/lighthouse/graph/PWAID',
@@ -51,14 +50,13 @@ const CHART_BASE_URLS = {
 class Gulliver {
   constructor() {
     this.config = Config.from(document.querySelector('#config'));
-    this.shell = new Shell(document);
     this.router = new Router(window, document.querySelector('main'));
+    this.shell = new Shell(document, this.router);
     this.offlineSupport = new OfflineSupport(window, this.router);
     this._setupRoutes();
     this.setupBacklink();
     this.setupServiceWorker();
     this.setupMessaging();
-    SearchButton.setupSearchElements(this.router);
 
     // Setup SignIn
     this.signIn = new SignIn(window, this.config);

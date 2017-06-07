@@ -21,32 +21,49 @@
 /* eslint-env browser */
 
 class SearchButton {
+  constructor(router, options) {
+    this._router = router;
+    this._searchForm = document.querySelector('#search');
+    this._searchInput = this._searchForm.querySelector('#search-input');
+    this._searchButton = document.querySelector('#search-button');
+    this._setupSearchButton();
+    // this._setupSearchElements();
+    this._options = options || {};
+  }
+
+  _setupSearchButton() {
+    const searchButtonClick = event => {
+      event.preventDefault();
+      if (this._searchForm.classList.contains('hidden')) {
+        this._searchForm.classList.remove('hidden');
+        this._searchInput.focus();
+        if (this._options.onShowForm) {
+          this._options.onShowForm();
+        }
+        return;
+      }
+      this._searchForm.classList.add('hidden');
+      if (this._options.onHideForm) {
+        this._options.onHideForm();
+      }
+    };
+    this._searchButton.addEventListener('click', searchButtonClick);
+  }
  /**
   * Setup/configure search button
   */
-  setupSearchElements(router) {
+  _setupSearchElements() {
     const eventHandler = event => {
       event.preventDefault();
-      document.querySelector('#search-button').blur();
-      const searchValue = document.querySelector('#search-input').value;
-      if (searchValue.length === 0) {
-        if (document.querySelector('#backlink').classList.contains('hidden')) {
-          document.querySelector('#newest').classList.toggle('hidden');
-          document.querySelector('#score').classList.toggle('hidden');
-        }
-        document.querySelector('#search').classList.toggle('hidden');
-      } else {
-        const urlParams = new URLSearchParams(window.location.search);
-        // Only navigate if the search query changes
-        if (searchValue !== urlParams.get('query')) {
-          router.navigate('/pwas/search?query=' + searchValue);
-        }
-      }
+        // const urlParams = new URLSearchParams(window.location.search);
+        // // Only navigate if the search query changes
+        // if (searchValue !== urlParams.get('query')) {
+        //   this._router.navigate('/pwas/search?query=' + searchValue);
+        // }
       document.querySelector('#search-input').focus();
     };
     document.querySelector('#search').addEventListener('submit', eventHandler);
-    document.querySelector('#search-button').addEventListener('click', eventHandler);
   }
 }
 
-export default new SearchButton();
+export default SearchButton;

@@ -15,14 +15,26 @@
 
 /* eslint-env browser */
 
+import SearchButton from './search-button';
+
 export default class Shell {
-  constructor(document) {
+  constructor(document, router) {
+    this._currentState = {};
+    this._router = router;
     this._document = document;
     this._backlink = document.querySelector('#backlink');
     this._tabs = document.querySelectorAll('#newest, #score');
     this._subtitle = document.querySelector('#subtitle');
     this._search = document.querySelector('#search');
     this._states = new Map();
+    this._searchButton = new SearchButton(this._router, {
+      onShowForm: () => {
+        this._tabs.forEach(tab => this._showElement(tab, false));
+      },
+      onHideForm: () => {
+        this._tabs.forEach(tab => this._showElement(tab, this._currentState.showTabs || false));
+      }
+    });
   }
 
   setStateForRoute(route, shellState) {
@@ -52,6 +64,7 @@ export default class Shell {
 
   onRouteChange(route) {
     const options = this._states.get(route);
+    this._currentState = options;
     this._showElement(this._backlink, options.backlink);
     this._showElement(this._subtitle, options.subtitle);
     this._showElement(this._search, options.search);
